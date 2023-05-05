@@ -44,7 +44,7 @@ proyectarNombres :: [Usuario] -> [String]
 proyectarNombres [] = []
 proyectarNombres (x:xs) = eliminarRepetidos (nombreDeUsuario x : proyectarNombres xs)
 
--- Las siguientes funciones son auxiliares para quitar los casos repetidos de nombres
+-- Las siguientes funciones son auxiliares que nos sirven para quitar los casos repetidos de nombres
 quitarTodos :: (Eq t) => t -> [t] -> [t]
 quitarTodos _ [] = []
 quitarTodos y (x:xs) | y == x = quitarTodos y xs
@@ -54,7 +54,7 @@ eliminarRepetidos :: (Eq t) => [t] -> [t]
 eliminarRepetidos [] = []
 eliminarRepetidos (x:xs) = x: eliminarRepetidos (quitarTodos x xs)
 
--- describir qué hace la función: Esta función nos sirve para saber cuales son los amigos de el usuario que le consultemos, tenemos una RedSocial y le damos un usuario, entonces esta función nos da la lista de usuarios que son sus amigos
+-- describir qué hace la función: Esta función nos sirve para saber cuales son los amigos de el usuario que le consultemos, tenemos una RedSocial y le damos un usuario, entonces esta función nos da la lista de usuarios que son sus amigos (que están relacionados con el)
 amigosDe :: RedSocial -> Usuario -> [Usuario]
 amigosDe (us,rs,ps) u = relacionadosCon (relaciones(us,rs,ps)) u
 
@@ -67,7 +67,8 @@ relacionadosCon (x:xs) u | u == fst x = [snd x] ++ relacionadosCon xs u
                          | u == snd x = [fst x] ++ relacionadosCon xs u
                          | otherwise = relacionadosCon xs u
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Esta función lo que hace es darnos la cantidad de amigos de un usuario.
+-- Lo que hace es calcular la longitud de la lista de amigos del usuario pedido usando la función del ejercicio anterior amigosDe
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
 cantidadDeAmigos (us,rs,ps) u = longitud (amigosDe (us,rs,ps) u) 
 
@@ -75,16 +76,15 @@ longitud :: [t] -> Int
 longitud [] = 0
 longitud (x:xs) = 1 + longitud xs
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Esta función nos
 usuarioConMasAmigos :: RedSocial -> Usuario
-usuarioConMasAmigos (us,rs,ps) = undefined
+usuarioConMasAmigos (us,rs,ps) = elAmigos (us,rs,ps) (usuarios (us,rs,ps))
 
 elAmigos :: RedSocial -> [Usuario] -> Usuario
 --Requiere que la lista de usuarios no sea vacía
 elAmigos (us,rs,ps) [x] = x
-elAmigos (us,rs,ps) (x:y:xs) | (cantidadDeAmigos (us,rs,ps) x) >= (cantidadDeAmigos (us,rs,ps) y) = x
+elAmigos (us,rs,ps) (x:y:xs) | (cantidadDeAmigos (us,rs,ps) x) >= (cantidadDeAmigos (us,rs,ps) y) = elAmigos (us,rs,ps) (x:xs)
                              | otherwise = elAmigos (us,rs,ps) (y:xs)
-
 
 -- describir qué hace la función: .....
 estaRobertoCarlos :: RedSocial -> Bool
