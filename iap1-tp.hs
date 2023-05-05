@@ -35,7 +35,7 @@ likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
 -- Ejercicios
-
+-- describir qué hace la función: Lo que hace esta función 
 nombresDeUsuarios :: RedSocial -> [String]
 nombresDeUsuarios (us,rs,ps) = proyectarNombres (usuarios(us,rs,ps))
 
@@ -112,10 +112,13 @@ pertenece _ [] = False
 pertenece y (x:xs) = y==x || pertenece y xs
 
 mismosElementos :: (Eq t) => [t] -> [t] -> Bool
-mismosElementos [] [] = True
-mismosElementos [] _ = False
-mismosElementos _ [] = False
-mismosElementos (x:xs) (y:ys) = pertenece x (y:ys) && mismosElementos xs ys && pertenece y (x:xs) && mismosElementos ys xs
+
+mismosElementos xs ys = estaIncluido xs ys && estaIncluido ys xs
+
+-- Auxiliar
+estaIncluido :: (Eq t) => [t] -> [t] -> Bool
+estaIncluido [] _ = True
+estaIncluido (x:xs) ys = pertenece x ys && estaIncluido xs ys
 
 redSocialValida :: RedSocial -> Bool
 
