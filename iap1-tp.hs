@@ -35,14 +35,16 @@ likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
 -- Ejercicios
--- describir qué hace la función: Lo que hace esta función 
+-- describir qué hace la función: Lo que hace esta función es agarrar la lista de los usuarios de una RedSocial y darnos una lista con todos los nombres de los usuarios (y sin repetirse)
 nombresDeUsuarios :: RedSocial -> [String]
 nombresDeUsuarios (us,rs,ps) = proyectarNombres (usuarios(us,rs,ps))
 
+-- en esta función se nos da una lista de usuarios y lo que hacemos es "extraer" solo los nombres para ponerlos en otra lista
 proyectarNombres :: [Usuario] -> [String]
 proyectarNombres [] = []
 proyectarNombres (x:xs) = eliminarRepetidos (nombreDeUsuario x : proyectarNombres xs)
 
+-- Las siguientes funciones son auxiliares para quitar los casos repetidos de nombres
 quitarTodos :: (Eq t) => t -> [t] -> [t]
 quitarTodos _ [] = []
 quitarTodos y (x:xs) | y == x = quitarTodos y xs
@@ -52,10 +54,13 @@ eliminarRepetidos :: (Eq t) => [t] -> [t]
 eliminarRepetidos [] = []
 eliminarRepetidos (x:xs) = x: eliminarRepetidos (quitarTodos x xs)
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Esta función nos sirve para saber cuales son los amigos de el usuario que le consultemos, tenemos una RedSocial y le damos un usuario, entonces esta función nos da la lista de usuarios que son sus amigos
 amigosDe :: RedSocial -> Usuario -> [Usuario]
 amigosDe (us,rs,ps) u = relacionadosCon (relaciones(us,rs,ps)) u
 
+{- Con esta función nosotros queremos ver quienes están relacionados con el usuario que le pidamos.
+Lo que hace la función es que dada una lista de relaciones y un usuario la función mira la primera relación de la lista y si el usuario es el primero de la relación nos da el segundo y luego usamos la recursión para ver las demás relaciones (de forma analoga si el usuario es el segundo)
+Además los ponemos en forma de lista para así luego concatenarlos y obtener la lista de usuarios relacionados con el usuario pedido-}
 relacionadosCon:: [Relacion] -> Usuario -> [Usuario]
 relacionadosCon [] _ = []
 relacionadosCon (x:xs) u | u == fst x = [snd x] ++ relacionadosCon xs u
@@ -112,7 +117,6 @@ pertenece _ [] = False
 pertenece y (x:xs) = y==x || pertenece y xs
 
 mismosElementos :: (Eq t) => [t] -> [t] -> Bool
-
 mismosElementos xs ys = estaIncluido xs ys && estaIncluido ys xs
 
 -- Auxiliar
