@@ -76,10 +76,12 @@ longitud :: [t] -> Int
 longitud [] = 0
 longitud (x:xs) = 1 + longitud xs
 
--- describir qué hace la función: Esta función nos
+-- describir qué hace la función: Esta función nos permite saber quien es el usuario que tiene más amigos dada una RedSocial
+-- Utilizando una función auxiliar podemos saber quien es el usuario con más amigos en la lista de usuarios de la RedSocial
 usuarioConMasAmigos :: RedSocial -> Usuario
 usuarioConMasAmigos (us,rs,ps) = elAmigos (us,rs,ps) (usuarios (us,rs,ps))
 
+-- Este auxiliar lo que hace es que dado una RedSocial y una lista de usuarios entonces compara la cantidad de amigos del primer usuario con el segundo usuario de la lista quedandose con el usuario de mayor cantidad de amigos y luego lo sigue comparando con el resto de la lista
 elAmigos :: RedSocial -> [Usuario] -> Usuario
 --Requiere que la lista de usuarios no sea vacía
 elAmigos (us,rs,ps) [x] = x
