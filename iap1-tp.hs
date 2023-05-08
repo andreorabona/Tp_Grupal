@@ -35,11 +35,14 @@ likesDePublicacion :: Publicacion -> [Usuario]
 likesDePublicacion (_, _, us) = us
 
 -- Ejercicios
+
+--Ejercicio 1
+
 -- describir qué hace la función: Lo que hace esta función es agarrar la lista de los usuarios de una RedSocial y darnos una lista con todos los nombres de los usuarios (y sin repetirse)
 nombresDeUsuarios :: RedSocial -> [String]
 nombresDeUsuarios (us,rs,ps) = proyectarNombres (usuarios(us,rs,ps))
 
--- en esta función se nos da una lista de usuarios y lo que hacemos es "extraer" solo los nombres para ponerlos en otra lista
+-- En esta función se nos da una lista de usuarios y lo que hacemos es "extraer" solo los nombres para ponerlos en otra lista
 proyectarNombres :: [Usuario] -> [String]
 proyectarNombres [] = []
 proyectarNombres (x:xs) = eliminarRepetidos (nombreDeUsuario x : proyectarNombres xs)
@@ -54,7 +57,10 @@ eliminarRepetidos :: (Eq t) => [t] -> [t]
 eliminarRepetidos [] = []
 eliminarRepetidos (x:xs) = x: eliminarRepetidos (quitarTodos x xs)
 
+--Ejercicio 2
+
 -- describir qué hace la función: Esta función nos sirve para saber cuales son los amigos de el usuario que le consultemos, tenemos una RedSocial y le damos un usuario, entonces esta función nos da la lista de usuarios que son sus amigos (que están relacionados con el)
+-- Observación: Como se requiere una RedSocialValida entonces con esta función aseguramos que no van a haber repetidos
 amigosDe :: RedSocial -> Usuario -> [Usuario]
 amigosDe (us,rs,ps) u = relacionadosCon (relaciones(us,rs,ps)) u
 
@@ -67,6 +73,8 @@ relacionadosCon (x:xs) u | u == fst x = [snd x] ++ relacionadosCon xs u
                          | u == snd x = [fst x] ++ relacionadosCon xs u
                          | otherwise = relacionadosCon xs u
 
+--Ejercicio 3
+
 -- describir qué hace la función: Esta función lo que hace es darnos la cantidad de amigos de un usuario.
 -- Lo que hace es calcular la longitud de la lista de amigos del usuario pedido usando la función del ejercicio anterior amigosDe
 cantidadDeAmigos :: RedSocial -> Usuario -> Int
@@ -75,6 +83,8 @@ cantidadDeAmigos (us,rs,ps) u = longitud (amigosDe (us,rs,ps) u)
 longitud :: [t] -> Int
 longitud [] = 0
 longitud (x:xs) = 1 + longitud xs
+
+--Ejercicio 4
 
 -- describir qué hace la función: Esta función nos permite saber quien es el usuario que tiene más amigos dada una RedSocial
 -- Utilizando una función auxiliar podemos saber quien es el usuario con más amigos en la lista de usuarios de la RedSocial
@@ -88,25 +98,62 @@ elAmigos (us,rs,ps) [x] = x
 elAmigos (us,rs,ps) (x:y:xs) | (cantidadDeAmigos (us,rs,ps) x) >= (cantidadDeAmigos (us,rs,ps) y) = elAmigos (us,rs,ps) (x:xs)
                              | otherwise = elAmigos (us,rs,ps) (y:xs)
 
--- describir qué hace la función: .....
+--Ejercicio 5
+
+-- describir qué hace la función: Esta función nos dice si hay o no un usuario que tenga más de un millón de amigos (como Roberto Carlos)
+-- Las dos funciones auxiliares nos sirven para verificar si en una lista de usuarios de una RedSocial existe algún usuario que tiene más de un millón de amigos
 estaRobertoCarlos :: RedSocial -> Bool
-estaRobertoCarlos = undefined
+estaRobertoCarlos (us,rs,ps) = existeMillonDeAmigos (us,rs,ps) (usuarios (us,rs,ps))
 
--- describir qué hace la función: .....
+-- Auxiliares
+millonDeAmigos :: RedSocial -> Usuario -> Bool
+millonDeAmigos (us,rs,ps) u = cantidadDeAmigos (us,rs,ps) u > 1000000
+
+existeMillonDeAmigos :: RedSocial -> [Usuario] -> Bool
+existeMillonDeAmigos (us,rs,ps) [] = False
+existeMillonDeAmigos (us,rs,ps) (x:xs) = millonDeAmigos (us,rs,ps) x || existeMillonDeAmigos (us,rs,ps) xs
+
+--Ejercicio 6
+
+-- describir qué hace la función: Esta función lo que hace es mostrarnos las publicaciones que "hizo" el usuario pedido
+-- Con una función auxiliar lo que hacemos es recorrer la lista de publicaciones y si el usuario de la publibación coincide con el usuario que queremos saber entonces esa publicación en una lista.
 publicacionesDe :: RedSocial -> Usuario -> [Publicacion]
-publicacionesDe = undefined
+publicacionesDe (us,rs,ps) u = proyectarPublicacionesDe (publicaciones(us,rs,ps)) u
 
--- describir qué hace la función: .....
+-- Auxiliar
+
+proyectarPublicacionesDe :: [Publicacion] -> Usuario -> [Publicacion]
+proyectarPublicacionesDe [] _ = []
+proyectarPublicacionesDe (x:xs) u | (usuarioDePublicacion x == u) = x : proyectarPublicacionesDe xs u
+                                  | otherwise = proyectarPublicacionesDe xs u
+
+--Ejercicio 7
+
+-- describir qué hace la función: Esta función lo que hace es darnos una lista de las publicaciones a las que el usuario pedido les dio "like"
+-- Con una función auxiliar lo que hacemos es recorrer la lista de publicaciones y si el usuario que queremos saber pertenece a la lista de usuarios que le dio me gusta en la publicacion entonces esa publicación la ponemos en una lista
 publicacionesQueLeGustanA :: RedSocial -> Usuario -> [Publicacion]
-publicacionesQueLeGustanA = undefined
+publicacionesQueLeGustanA (us,rs,ps) u = proyectarPublicacionesQueLeGustanA (publicaciones (us,rs,ps)) u
 
--- describir qué hace la función: .....
+-- Auxiliar
+
+proyectarPublicacionesQueLeGustanA :: [Publicacion] -> Usuario -> [Publicacion]
+proyectarPublicacionesQueLeGustanA [] _ = []
+proyectarPublicacionesQueLeGustanA (x:xs) u | pertenece u (likesDePublicacion x) = x : proyectarPublicacionesQueLeGustanA xs u
+                                            | otherwise = proyectarPublicacionesQueLeGustanA xs u
+
+--Ejercicio 8
+
+-- describir qué hace la función: Esta función nos da verdadero o falso dependiendo de si las publicaciones que le gustan al u1 son iguales que las que le gustan al u2
 lesGustanLasMismasPublicaciones :: RedSocial -> Usuario -> Usuario -> Bool
-lesGustanLasMismasPublicaciones = undefined
+lesGustanLasMismasPublicaciones (us,rs,ps) u1 u2 = publicacionesQueLeGustanA (us,rs,ps) u1 == publicacionesQueLeGustanA (us,rs,ps) u2
+
+--Ejercicio 9
 
 -- describir qué hace la función: .....
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
 tieneUnSeguidorFiel = undefined
+
+--Ejercicio 10
 
 -- describir qué hace la función: .....
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
@@ -258,3 +305,8 @@ usuariosB = [usuario1, usuario2, usuario3, usuario5]
 relacionesB = [relacion1_2, relacion2_3]
 publicacionesB = [publicacion1_3, publicacion1_4, publicacion1_5, publicacion3_1, publicacion3_2, publicacion3_3]
 redB = (usuariosB, relacionesB, publicacionesB)
+
+usuariosC = [usuario1, usuario2, usuario3]
+relacionesC = []
+publicacionesC = [publicacion1_1, publicacion1_2, publicacion2_2, publicacion3_3]
+redC = (usuariosC, relacionesC, publicacionesC)
