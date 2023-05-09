@@ -149,15 +149,24 @@ lesGustanLasMismasPublicaciones (us,rs,ps) u1 u2 = publicacionesQueLeGustanA (us
 
 --Ejercicio 9
 
--- describir qué hace la función: .....
+-- describir qué hace la función: Esta función lo que hace es ver si el usuario pedido tiene algún otro usuario de la red que le haya dado me gusta a todas sus publicaciones
+-- Con la función auxiliar nosotros podemos recorrer la lista de usuarios de la red y ver si las publicaciones del usuario pedido están incluidas en la lista de publicaciones a las que los usuarios le dieron me gusta
 tieneUnSeguidorFiel :: RedSocial -> Usuario -> Bool
-tieneUnSeguidorFiel = undefined
+tieneUnSeguidorFiel (us,rs,ps) u = seguidorFiel (us,rs,ps) (usuarios(us,rs,ps)) u
+
+-- Auxiliar
+
+seguidorFiel :: RedSocial -> [Usuario] -> Usuario -> Bool
+seguidorFiel _ [] _ = False
+seguidorFiel (us,rs,ps) (x:xs) u | estaIncluido (publicacionesDe (us,rs,ps) u) (publicacionesQueLeGustanA (us,rs,ps) x) && (longitud (publicacionesDe (us,rs,ps) u) > 0) = True
+                                 | otherwise = seguidorFiel (us,rs,ps) xs u
 
 --Ejercicio 10
 
 -- describir qué hace la función: .....
 existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
-existeSecuenciaDeAmigos = undefined
+existeSecuenciaDeAmigos (us,rs,ps) u1 u2 = longitud (usuarios(us,rs,ps)) > 2 && {-empiezaCon u1 (usuarios(us,rs,ps)) && terminaCon u2 (usuarios(us,rs,ps)) && -}sonDeLaRed (us,rs,ps) (usuarios(us,rs,ps)) && cadenaDeAmigos (usuarios(us,rs,ps)) (us,rs,ps)
+
 
 --Funciones auxiliares (Predicados)
 
@@ -310,3 +319,13 @@ usuariosC = [usuario1, usuario2, usuario3]
 relacionesC = []
 publicacionesC = [publicacion1_1, publicacion1_2, publicacion2_2, publicacion3_3]
 redC = (usuariosC, relacionesC, publicacionesC)
+
+publicacion91 = (usuario1, "a", [usuario2,usuario3])
+publicacion92 = (usuario1, "b", [usuario2,usuario3])
+publicacion93 = (usuario1, "c", [usuario3])
+publicacion94 = (usuario1, "d", [usuario2,usuario3])
+
+usuariosZ = [usuario1, usuario2, usuario3]
+relacionesZ = []
+publicacionesZ = [publicacion91,publicacion92,publicacion93,publicacion94]
+redZ = (usuariosZ, relacionesZ, publicacionesZ)
