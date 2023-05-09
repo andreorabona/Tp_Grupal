@@ -66,11 +66,11 @@ amigosDe (us,rs,ps) u = relacionadosCon (relaciones(us,rs,ps)) u
 
 {- Con esta función nosotros queremos ver quienes están relacionados con el usuario que le pidamos.
 Lo que hace la función es que dada una lista de relaciones y un usuario la función mira la primera relación de la lista y si el usuario es el primero de la relación nos da el segundo y luego usamos la recursión para ver las demás relaciones (de forma analoga si el usuario es el segundo)
-Además los ponemos en forma de lista para así luego concatenarlos y obtener la lista de usuarios relacionados con el usuario pedido-}
+Si estan relacionados con el usuario entonces nos vamos armando una lista con ellos-}
 relacionadosCon:: [Relacion] -> Usuario -> [Usuario]
 relacionadosCon [] _ = []
-relacionadosCon (x:xs) u | u == fst x = [snd x] ++ relacionadosCon xs u
-                         | u == snd x = [fst x] ++ relacionadosCon xs u
+relacionadosCon (x:xs) u | u == fst x = (snd x) : relacionadosCon xs u
+                         | u == snd x = (fst x) : relacionadosCon xs u
                          | otherwise = relacionadosCon xs u
 
 --Ejercicio 3
@@ -141,6 +141,10 @@ proyectarPublicacionesQueLeGustanA [] _ = []
 proyectarPublicacionesQueLeGustanA (x:xs) u | pertenece u (likesDePublicacion x) = x : proyectarPublicacionesQueLeGustanA xs u
                                             | otherwise = proyectarPublicacionesQueLeGustanA xs u
 
+pertenece :: (Eq t) => t -> [t] -> Bool
+pertenece _ [] = False
+pertenece y (x:xs) = y==x || pertenece y xs
+
 --Ejercicio 8
 
 -- describir qué hace la función: Esta función nos da verdadero o falso dependiendo de si las publicaciones que le gustan al u1 son iguales que las que le gustan al u2
@@ -161,22 +165,15 @@ seguidorFiel _ [] _ = False
 seguidorFiel (us,rs,ps) (x:xs) u | estaIncluido (publicacionesDe (us,rs,ps) u) (publicacionesQueLeGustanA (us,rs,ps) x) && (longitud (publicacionesDe (us,rs,ps) u) > 0) = True
                                  | otherwise = seguidorFiel (us,rs,ps) xs u
 
---Ejercicio 10
-
--- describir qué hace la función: .....
-existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
-existeSecuenciaDeAmigos (us,rs,ps) u1 u2 = longitud (usuarios(us,rs,ps)) > 2 && cadenaDeAmigos (usuarios(us,rs,ps)) (us,rs,ps)
-
-
---Funciones auxiliares (Predicados)
-
-pertenece :: (Eq t) => t -> [t] -> Bool
-pertenece _ [] = False
-pertenece y (x:xs) = y==x || pertenece y xs
-
 estaIncluido :: (Eq t) => [t] -> [t] -> Bool
 estaIncluido [] _ = True
 estaIncluido (x:xs) ys = pertenece x ys && estaIncluido xs ys
+
+--Ejercicio 10
+
+-- describir qué hace la función: Esta función lo que hace es ver si los usuarios de la red forman una cadena de amistad entre los usuarios pedidos, para esto  
+existeSecuenciaDeAmigos :: RedSocial -> Usuario -> Usuario -> Bool
+existeSecuenciaDeAmigos (us,rs,ps) u1 u2 = longitud (usuarios(us,rs,ps)) > 2 && cadenaDeAmigos (usuarios(us,rs,ps)) (us,rs,ps)
 
 cadenaDeAmigos :: [Usuario] -> RedSocial -> Bool
 cadenaDeAmigos [] (us,rs,ps) = True
@@ -184,9 +181,15 @@ cadenaDeAmigos [x] (us,rs,ps) = True
 cadenaDeAmigos (x:y:xs) (us,rs,ps) | (relacionadosDirecto x y (us,rs,ps) == False) = False
                                    | otherwise = cadenaDeAmigos (y:xs) (us,rs,ps)
 
+hayCadena :: [Usuario] -> Usuario -> Usuario -> RedSocial -> Bool
+hayCadena [] _ _ _ = True
+hayCadena [x] _ _ _ = True
+hayCadena (x:y:xs) u1 u2 (us,rs,ps) = undefined
+
 relacionadosDirecto :: Usuario -> Usuario -> RedSocial -> Bool
 
-relacionadosDirecto (id1,nombre1) (id2,nombre2) (us,rs,ps) = (pertenece ((id1,nombre1),(id2,nombre2)) (relaciones (us,rs,ps))) || (pertenece ((id2,nombre2),(id1,nombre1)) (relaciones (us,rs,ps)))
+relacionadosDirecto u1 u2 (us,rs,ps) = (pertenece (u1,u2) (relaciones (us,rs,ps))) || (pertenece (u2,u1) (relaciones (us,rs,ps)))
+
 
 -- RedesSociales
 usuario1 = (1, "Juan")
@@ -230,8 +233,8 @@ relacionesB = [relacion1_2, relacion2_3]
 publicacionesB = [publicacion1_3, publicacion1_4, publicacion1_5, publicacion3_1, publicacion3_2, publicacion3_3]
 redB = (usuariosB, relacionesB, publicacionesB)
 
-usuariosC = [usuario1, usuario2, usuario3]
-relacionesC = []
+usuariosC = [usuario1, usuario2, usuario3, usuario4]
+relacionesC = [relacion1_2,relacion3_4, relacion2_3]
 publicacionesC = [publicacion1_1, publicacion1_2, publicacion2_2, publicacion3_3]
 redC = (usuariosC, relacionesC, publicacionesC)
 
