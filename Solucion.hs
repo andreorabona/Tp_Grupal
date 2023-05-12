@@ -1,7 +1,9 @@
+module Solucion where
+
 -- Completar con los datos del grupo
 --
--- Nombre de Grupo: xx
--- Integrante 1: Nombre Apellido, email, LU
+-- Nombre de Grupo: MRK
+-- Integrante 1: Andrea Nicolas Orabona , orabonanicolas@gmail.com, 93/23
 -- Integrante 2: Nombre Apellido, email, LU
 -- Integrante 3: Nombre Apellido, email, LU
 -- Integrante 4: Nombre Apellido, email, LU
@@ -162,7 +164,7 @@ tieneUnSeguidorFiel (us,rs,ps) u = seguidorFiel (us,rs,ps) (usuarios(us,rs,ps)) 
 
 seguidorFiel :: RedSocial -> [Usuario] -> Usuario -> Bool
 seguidorFiel _ [] _ = False
-seguidorFiel (us,rs,ps) (x:xs) u | estaIncluido (publicacionesDe (us,rs,ps) u) (publicacionesQueLeGustanA (us,rs,ps) x) && (longitud (publicacionesDe (us,rs,ps) u) > 0) = True
+seguidorFiel (us,rs,ps) (x:xs) u | estaIncluido (publicacionesDe (us,rs,ps) u) (publicacionesQueLeGustanA (us,rs,ps) x) && (longitud (publicacionesDe (us,rs,ps) u) > 0) && u/=x = True
                                  | otherwise = seguidorFiel (us,rs,ps) xs u
 
 estaIncluido :: (Eq t) => [t] -> [t] -> Bool
@@ -181,17 +183,12 @@ cadenaDeAmigos [x] (us,rs,ps) = True
 cadenaDeAmigos (x:y:xs) (us,rs,ps) | (relacionadosDirecto x y (us,rs,ps) == False) = False
                                    | otherwise = cadenaDeAmigos (y:xs) (us,rs,ps)
 
-hayCadena :: [Usuario] -> Usuario -> Usuario -> RedSocial -> Bool
-hayCadena [] _ _ _ = True
-hayCadena [x] _ _ _ = True
-hayCadena (x:y:xs) u1 u2 (us,rs,ps) = undefined
-
 relacionadosDirecto :: Usuario -> Usuario -> RedSocial -> Bool
 
 relacionadosDirecto u1 u2 (us,rs,ps) = (pertenece (u1,u2) (relaciones (us,rs,ps))) || (pertenece (u2,u1) (relaciones (us,rs,ps)))
 
 
--- RedesSociales
+-- Ejemplos de RedesSociales
 usuario1 = (1, "Juan")
 usuario2 = (2, "Natalia")
 usuario3 = (3, "Pedro")
@@ -238,10 +235,10 @@ relacionesC = [relacion1_2,relacion3_4, relacion2_3]
 publicacionesC = [publicacion1_1, publicacion1_2, publicacion2_2, publicacion3_3]
 redC = (usuariosC, relacionesC, publicacionesC)
 
-publicacion91 = (usuario1, "a", [usuario2])
-publicacion92 = (usuario1, "b", [usuario3])
-publicacion93 = (usuario1, "c", [usuario2])
-publicacion94 = (usuario1, "d", [usuario2])
+publicacion91 = (usuario1, "a", [usuario1,usuario2])
+publicacion92 = (usuario1, "b", [usuario3,usuario2])
+publicacion93 = (usuario1, "c", [usuario2,usuario3])
+publicacion94 = (usuario1, "d", [usuario2,usuario1])
 
 usuariosZ = [usuario1, usuario2, usuario3]
 relacionesZ = []
